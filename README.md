@@ -15,6 +15,7 @@ but is treated as a firmware update.
 * SPIFFS hosted .html and style.css files. These can be replaced to modify webpage functionality and
 look without recompiling a new binary.
 * Visual Studio Code + Platformio plugin using Espressif Arduino framework
+* Assumes 4MB flash, uses 'min_spiffs.csv' partitition table (larger OTA partitions, smaller SPIFFS partition) 
 
 
 ## Credits
