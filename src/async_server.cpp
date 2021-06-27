@@ -24,8 +24,8 @@ bool IsRebootRequired = false;
          
 const char* host = "esp32";
 
-const String default_ssid = "aps";
-const String default_wifipassword = "4@&7w4T~@^#9";
+const String default_ssid = "access-point";
+const String default_wifipassword = "12345678";
 const String default_httpuser = "admin";
 const String default_httppassword = "admin";
 const int default_webserverporthttp = 80;
