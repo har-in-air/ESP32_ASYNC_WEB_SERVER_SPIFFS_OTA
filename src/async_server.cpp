@@ -307,8 +307,7 @@ static void server_handle_upload(AsyncWebServerRequest *request, String filename
 // handles non .bin file uploads to the SPIFFS directory
 static void server_handle_SPIFFS_upload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   // make sure authenticated before allowing upload
-//  if (server_authenticate(request)) {
-  if (true) {
+  if (server_authenticate(request)) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     Serial.println(logmessage);
 
@@ -343,8 +342,7 @@ static void server_handle_SPIFFS_upload(AsyncWebServerRequest *request, String f
 // handles OTA firmware update
 static void server_handle_OTA_update(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   // make sure authenticated before allowing upload
-  //if (server_authenticate(request)) {
-  if (true) {
+  if (server_authenticate(request)) {
     String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
     Serial.println(logmessage);
 
