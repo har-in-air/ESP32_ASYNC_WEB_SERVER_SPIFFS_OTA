@@ -21,6 +21,7 @@ void setup() {
 void loop() {
 	if (IsRebootRequired) {
 		Serial.println("Rebooting ESP32: "); 
+		delay(1000); // give time for reboot page to load
 		ESP.restart();
 		}
 	// your application loop ...

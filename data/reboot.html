@@ -1,18 +1,18 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-</head>
-<body style="background-color:#d6d0bf">
-<h1 style="color:white;text-align:center;font-family:sans-serif;padding:0.2em 0.2em;background:#558ED5;border-radius:0.5em;
-font-size:1em;">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head> 
+<body>
+  <h1>
   Allowing time for reboot, WiFi and web server initialization<br>Re-opening home page in <span id="countdown">15</span> seconds...
 </h1>
 <script type="text/javascript">
   var seconds = 15;
   function countdown() {
     seconds = seconds - 1;
-    if (seconds < 0) {
+    if (seconds <= 0) {
       window.location = "/";
     } else {
       document.getElementById("countdown").innerHTML = seconds;

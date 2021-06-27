@@ -8,7 +8,7 @@
 #include "async_server.h"
 
 // connect to existing WiFi access point as a station
-#define STATION_WEBSERVER
+//#define STATION_WEBSERVER
 
 typedef struct WIFI_CONFIG_ {
   String ssid;               // wifi ssid
