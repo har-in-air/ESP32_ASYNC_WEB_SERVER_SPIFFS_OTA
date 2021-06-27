@@ -7,8 +7,12 @@
 #include <Update.h>
 #include "async_server.h"
 
+// Credits : this is a mashup of code from the following repositories, plus OTA firmware update feature
+// https://github.com/smford/esp32-asyncwebserver-fileupload-example
+// https://randomnerdtutorials.com/esp32-web-server-spiffs-spi-flash-file-system/
+
 // connect to existing WiFi access point as a station
-//#define STATION_WEBSERVER
+#define STATION_WEBSERVER
 
 typedef struct WIFI_CONFIG_ {
   String ssid;               // wifi ssid
