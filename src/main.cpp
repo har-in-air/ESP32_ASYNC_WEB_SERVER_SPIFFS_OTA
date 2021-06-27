@@ -2,7 +2,6 @@
 #include <SPIFFS.h>
 #include "async_server.h"
 
-
 void setup() {
 	Serial.begin(115200);
 	Serial.printf("\r\n\r\nBinary compiled on %s at %s\r\n", __DATE__, __TIME__);
@@ -15,13 +14,15 @@ void setup() {
 		}
 
 	server_init();
+	// your application initialization code ...
 	}
 
 
 void loop() {
-  if (IsRebootRequired) {
-	  Serial.println("Rebooting ESP32: "); 
-	  ESP.restart();
-	  }
-}
+	if (IsRebootRequired) {
+		Serial.println("Rebooting ESP32: "); 
+		ESP.restart();
+		}
+	// your application loop ...
+	}
 
