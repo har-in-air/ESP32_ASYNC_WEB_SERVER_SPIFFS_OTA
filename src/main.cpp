@@ -8,8 +8,7 @@ void setup() {
 	Serial.printf("\r\n\r\nBinary compiled on %s at %s\r\n", __DATE__, __TIME__);
 	Serial.println("Mounting SPIFFS ...");
 	if (!SPIFFS.begin(true)) {
-		// if you have not used SPIFFS before on a ESP32, it will show this error.
-		// after a reboot SPIFFS will be configured and will happily work.
+		// SPIFFS will be configured on reboot
 		Serial.println("ERROR: Cannot mount SPIFFS, Rebooting");
 		delay(1000);
 		ESP.restart();
