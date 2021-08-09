@@ -20,10 +20,12 @@ appearance without recompiling a new binary.
 
 ## Credits
 
-This is a mashup of functionality from the following repositories, with added OTA update feature.
+This is a mashup of functionality from the following repositories :
 * https://github.com/smford/esp32-asyncwebserver-fileupload-example
 * https://randomnerdtutorials.com/esp32-web-server-spiffs-spi-flash-file-system/
-
+Additional features added :
+* OTA firmware update
+* Chunked file downloads
 
 ## Project Notes
 

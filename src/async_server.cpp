@@ -12,7 +12,7 @@
 // https://randomnerdtutorials.com/esp32-web-server-spiffs-spi-flash-file-system/
 
 // connect to existing WiFi access point as a station
-#define STATION_WEBSERVER
+//#define STATION_WEBSERVER
 
 typedef struct WIFI_CONFIG_ {
   String ssid;               // wifi ssid
@@ -35,6 +35,7 @@ const String default_httppassword = "admin";
 const int default_webserverporthttp = 80;
 
 static WIFI_CONFIG config;    
+static File SpiffsFile;
 
 static String server_directory(bool ishtml = false);
 static void server_not_found(AsyncWebServerRequest *request);
@@ -45,6 +46,7 @@ static String server_string_processor(const String& var);
 static void server_configure();
 static String server_ui_size(const size_t bytes);
 static void server_handle_OTA_update(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
+static int spiffs_chunked_read(uint8_t* buffer, int maxLen);
 
 
 void server_init() {
@@ -176,6 +178,22 @@ static String server_string_processor(const String& var) {
     }
 
 
+static int spiffs_chunked_read(uint8_t* buffer, int maxLen) {              
+  //Serial.printf("MaxLen = %d\n", maxLen);
+  if (!SpiffsFile.available()) {
+    SpiffsFile.close();
+    return 0;
+    }
+  else {
+    int count = 0;
+    while (SpiffsFile.available() && (count < maxLen)) {
+      buffer[count] = SpiffsFile.read();
+      count++;
+      }
+    return count;
+    }
+}
+
 void server_configure() {
   // if url isn't found
   server->onNotFound(server_not_found);
@@ -252,33 +270,65 @@ void server_configure() {
         if (!SPIFFS.exists(fileName)) {
           Serial.println(logmessage + " ERROR: file does not exist");
           request->send(400, "text/plain", "ERROR: file does not exist");
-        } else {
+          } 
+        else {
           Serial.println(logmessage + " file exists");
           if (strcmp(fileAction, "download") == 0) {
             logmessage += " downloaded";
-            request->send(SPIFFS, fileName, "application/octet-stream");
-          } else if (strcmp(fileAction, "delete") == 0) {
+            SpiffsFile = SPIFFS.open(fileName, "r");
+            int sizeBytes = SpiffsFile.size();
+            Serial.println("large file, chunked download required");
+            AsyncWebServerResponse *response = request->beginResponse("application/octet-stream", sizeBytes, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
+              return spiffs_chunked_read(buffer, maxLen);
+              });
+            char szBuf[80];
+            sprintf(szBuf, "attachment; filename=%s", &fileName[1]);// get past the leading '/'
+            response->addHeader("Content-Disposition", szBuf);
+            response->addHeader("Connection", "close");
+            request->send(response);
+            } 
+          else 
+          if (strcmp(fileAction, "delete") == 0) {
             logmessage += " deleted";
             SPIFFS.remove(fileName);
             request->send(200, "text/plain", "Deleted File: " + String(fileName));
-          } else {
+            } 
+          else {
             logmessage += " ERROR: invalid action param supplied";
             request->send(400, "text/plain", "ERROR: invalid action param supplied");
-          }
+            }
           Serial.println(logmessage);
-        }
-      } else {
-        request->send(400, "text/plain", "ERROR: name and action params required");
+          }
+      } 
+    else {
+      request->send(400, "text/plain", "ERROR: name and action params required");
       }
-    } else {
-      logmessage += " Auth: Failed";
-      Serial.println(logmessage);
-      return request->requestAuthentication();
+    } 
+  else {
+    logmessage += " Auth: Failed";
+    Serial.println(logmessage);
+    return request->requestAuthentication();
     }
   });
 }
 
-
+#if 0
+void read_file_chunk(uint8_t* buffer, int maxlen) {
+      int bytesRemaining = (int)(FlashLogFreeAddress - flashAddr);
+      do {
+         int numXmitBytes =  bytesRemaining > 256 ? 256 : bytesRemaining;  
+		   spiflash_readBuffer(flashAddr, buffer, numXmitBytes);
+         pServer->sendContent_P((const char*)buffer, numXmitBytes);
+         flashAddr += numXmitBytes;
+         bytesRemaining = (int)(FlashLogFreeAddress - flashAddr);
+         delayMs(10);
+		   } while (bytesRemaining >= 0);
+	   }
+   else {
+      server_reportFileNotFound("datalog"); 
+      }
+   }
+#endif
 
 static void server_not_found(AsyncWebServerRequest *request) {
   String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
